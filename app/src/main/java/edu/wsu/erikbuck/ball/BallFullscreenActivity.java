@@ -197,6 +197,7 @@ public class BallFullscreenActivity extends AppCompatActivity implements Drawer 
     private float mSpeed = 100.0f;
     private int mBallLocationX = 200;
     private int mBallLocationY = 200;
+    private int bounceSpeed = 2;
 
     @Override
     public void onDrawFrame(GL10 gl, SpriteBatcher sb) {
@@ -214,15 +215,30 @@ public class BallFullscreenActivity extends AppCompatActivity implements Drawer 
         }
         mLastUpdateInstant = mCurrentInstant;
         mCurrentInstant = newCurrentInstant;
+        final float vSpeed = (bounceSpeed * mSpeed) / 100;
 
+        //Defines bounds of "play area"
         if(mBallLocationX >= (mWidthPixels - 64) || mBallLocationX <= 64) {
                 mVectorX *= -1.3;
+                //Speed changing statement, this will be moved into line contact area
+                if(vSpeed < 4)
+                    bounceSpeed += 0.5;
+                else if (vSpeed <= 5)
+                    bounceSpeed += 0.1;
+                else if (bounceSpeed > 6 && bounceSpeed <= 7)
+                    bounceSpeed += 0.01;
         }
         if( mBallLocationY >= (mHeightPixels - 64) || mBallLocationY <= 64) {
             mVectorY *= -1.0;
+            if(vSpeed < 4)
+                bounceSpeed += 0.5;
+            else if (vSpeed <= 5)
+                bounceSpeed += 0.1;
+            else if (bounceSpeed > 6 && bounceSpeed <= 7)
+                bounceSpeed += 0.01;
         }
-        mSpeed += 1;
-        final float vSpeed = (float)(timeDeltaSec * mSpeed);
+
+
         final float scaledVectorX = vSpeed * mVectorX;
         final float scaledVectorY = vSpeed * mVectorY;
         mBallLocationX = (int)((float)mBallLocationX + scaledVectorX);
